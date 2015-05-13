@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{
+            background: linear-gradient(90deg ,#000000, #02000c);
+            color: white;
+            text-shadow: 0 0 10px whitesmoke;
+            font-size: 50pt;
+        }
+
+
+        .sun{
+            background-color: #ffe029;
+            box-shadow: 0 0 35px #fffe46;
+        }
+
+        .sky{
+            background-color: #36fff3;
+            box-shadow: 0 0 35px #7adfff;
+        }
+
+        .eco{
+            background-color: #3dff00;
+            box-shadow: 0 0 35px #4aff60;
+        }
+
+        .rose{
+            background-color: #ff0400;
+            box-shadow: 0 0 35px #ff4143;
+        }
+
+        .deep{
+            background-color: #ff00e1;
+            box-shadow: 0 0 35px #ff4de6;
+        }
+    </style>
+    <script src="bacteria.js"></script>
+    <script>
+
+        var Global= {};
+        Global.arr = [];
+        Global.size = 60;
+        Global.cursorBlackHole = false;
+        Global.cursorBlackHolePower = 4;
+
+        Global.Points = {};
+        Global.Points.Eco = 0;
+        Global.Points.Sky = 0;
+        Global.Points.Deep = 0;
+        Global.Points.Rose = 0;
+        Global.Points.Sun = 0;
+
+        Cursor = {};
+
+        window.onmousemove = function(e)
+        {
+            Cursor.x = e.clientX;
+            Cursor.y = e.clientY;
+        };
+
+        window.onload = function(){
+            for(var i = 0; i < Global.size; i++)
+            {
+                Global.arr[i] = new Bacteria();
+            }
+
+            setInterval(function(){
+                for(var i = 0; i < Global.size; i++)
+                {
+                    document.getElementById("sky").innerHTML = Global.Points.Sky;
+                    document.getElementById("eco").innerHTML = Global.Points.Eco;
+                    document.getElementById("sun").innerHTML = Global.Points.Sun;
+                    document.getElementById("deep").innerHTML = Global.Points.Deep;
+                    document.getElementById("rose").innerHTML = Global.Points.Rose;
+                    if (Global.cursorBlackHole)
+                    {
+                        if (Global.arr[i].xCenter() < Cursor.x) Global.arr[i].x+=Global.cursorBlackHolePower;
+                        if (Global.arr[i].xCenter() > Cursor.x) Global.arr[i].x-=Global.cursorBlackHolePower;
+                        if (Global.arr[i].yCenter() > Cursor.y) Global.arr[i].y-=Global.cursorBlackHolePower;
+                        if (Global.arr[i].yCenter() < Cursor.y) Global.arr[i].y+=Global.cursorBlackHolePower;
+                    }
+                    Global.arr[i].Update();
+                }
+            }, 50);
+        };
+    </script>
+</head>
+<body id="canvas">
+Team SKY: <span id="sky">0</span><br>
+Team ECO: <span id="eco">0</span><br>
+Team SUN: <span id="sun">0</span><br>
+Team DEEP: <span id="deep">0</span><br>
+Team ROSE: <span id="rose">0</span><br>
+</body>
+</html>
