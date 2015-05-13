@@ -7,8 +7,7 @@
         body{
             background: linear-gradient(90deg ,#000000, #02000c);
             color: white;
-            text-shadow: 0 0 10px whitesmoke;
-            font-size: 50pt;
+            font-size: 14pt;
         }
 
 
@@ -35,6 +34,26 @@
         .deep{
             background-color: #ff00e1;
             box-shadow: 0 0 35px #ff4de6;
+        }
+
+        .sunLabel{
+            color: #ffe029;
+        }
+
+        .skyLabel{
+            color: #36fff3;
+        }
+
+        .ecoLabel{
+            color: #3dff00;
+        }
+
+        .roseLabel{
+            color: #ff0400;
+        }
+
+        .deepLabel{
+            color: #ff00e1;
         }
     </style>
     <script src="bacteria.js"></script>
@@ -64,17 +83,23 @@
         window.onload = function(){
             for(var i = 0; i < Global.size; i++)
             {
-                Global.arr[i] = new Bacteria();
+                var className = "";
+                if (i < Global.size/5) className = "sun";
+                else if (i < 2*Global.size/5) className = "eco";
+                else if (i < 3*Global.size/5) className = "sky";
+                else if (i < 4*Global.size/5) className = "rose";
+                else className = "deep";
+                Global.arr[i] = new Bacteria(className);
             }
 
             setInterval(function(){
                 for(var i = 0; i < Global.size; i++)
                 {
-                    document.getElementById("sky").innerHTML = Global.Points.Sky;
-                    document.getElementById("eco").innerHTML = Global.Points.Eco;
-                    document.getElementById("sun").innerHTML = Global.Points.Sun;
-                    document.getElementById("deep").innerHTML = Global.Points.Deep;
-                    document.getElementById("rose").innerHTML = Global.Points.Rose;
+                    document.getElementById("sky").innerHTML = Math.floor(Global.Points.Sky);
+                    document.getElementById("eco").innerHTML = Math.floor(Global.Points.Eco);
+                    document.getElementById("sun").innerHTML = Math.floor(Global.Points.Sun);
+                    document.getElementById("deep").innerHTML = Math.floor(Global.Points.Deep);
+                    document.getElementById("rose").innerHTML = Math.floor(Global.Points.Rose);
                     if (Global.cursorBlackHole)
                     {
                         if (Global.arr[i].xCenter() < Cursor.x) Global.arr[i].x+=Global.cursorBlackHolePower;
@@ -89,10 +114,10 @@
     </script>
 </head>
 <body id="canvas">
-Team SKY: <span id="sky">0</span><br>
-Team ECO: <span id="eco">0</span><br>
-Team SUN: <span id="sun">0</span><br>
-Team DEEP: <span id="deep">0</span><br>
-Team ROSE: <span id="rose">0</span><br>
+<div class="skyLabel">Team SKY: <span id="sky">0</span></div>
+<div class="ecoLabel">Team ECO: <span id="eco">0</span></div>
+<div class="sunLabel">Team SUN: <span id="sun">0</span></div>
+<div class="deepLabel">Team DEEP: <span id="deep">0</span></div>
+<div class="roseLabel">Team ROSE: <span id="rose">0</span></div>
 </body>
 </html>
