@@ -72,15 +72,25 @@
         Global.Points.Rose = 0;
         Global.Points.Sun = 0;
 
-        Cursor = {};
+        Global.IntervalID = 0;
 
-        window.onmousemove = function(e)
+        function startGame(interval)
         {
-            Cursor.x = e.clientX;
-            Cursor.y = e.clientY;
-        };
+            Global.arr = [];
+            Global.size = 60;
+            Global.Points.Eco = 0;
+            Global.Points.Sky = 0;
+            Global.Points.Deep = 0;
+            Global.Points.Rose = 0;
+            Global.Points.Sun = 0;
 
-        window.onload = function(){
+            document.getElementById("canvas").innerHTML =
+                    '<div class="skyLabel">Team SKY: <span id="sky">0</span></div>\
+                     <div class="ecoLabel">Team ECO: <span id="eco">0</span></div>\
+                     <div class="sunLabel">Team SUN: <span id="sun">0</span></div>\
+                     <div class="deepLabel">Team DEEP: <span id="deep">0</span></div>\
+                     <div class="roseLabel">Team ROSE: <span id="rose">0</span></div>';
+
             for(var i = 0; i < Global.size; i++)
             {
                 var className = "";
@@ -92,7 +102,8 @@
                 Global.arr[i] = new Bacteria(className);
             }
 
-            setInterval(function(){
+            clearInterval(Global.IntervalID);
+            Global.IntervalID = setInterval(function(){
                 for(var i = 0; i < Global.size; i++)
                 {
                     document.getElementById("sky").innerHTML = Math.floor(Global.Points.Sky);
@@ -109,7 +120,19 @@
                     }
                     Global.arr[i].Update();
                 }
-            }, 50);
+            }, interval);
+        }
+
+        Cursor = {};
+
+        window.onmousemove = function(e)
+        {
+            Cursor.x = e.clientX;
+            Cursor.y = e.clientY;
+        };
+
+        window.onload = function(){
+            startGame(50);
         };
     </script>
 </head>

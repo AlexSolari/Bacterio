@@ -65,7 +65,7 @@ function Bacteria(team)
                     else if (this.className == "deep") {Global.Points.Deep += 5*Global.arr[i].r/this.r;}
                     else if (this.className == "sun") {Global.Points.Sun += 5*Global.arr[i].r/this.r;}
                 }
-                
+
                 this.r += width/(height*2)*Global.arr[i].r/this.r;
                 this.speed = width/(height*2)/Math.sqrt(this.r);
 
@@ -110,9 +110,9 @@ function Bacteria(team)
         {
             DOMelement.style.top = this.y-this.r + "px";
             DOMelement.style.left = this.x-this.r + "px";
-            DOMelement.style.height = this.r*2 + "px";
-            DOMelement.style.width = this.r*2 + "px";
-            DOMelement.style.borderRadius = this.r*2 + "px";
+            DOMelement.style.height = Math.floor(this.r*2) + "px";
+            DOMelement.style.width = Math.floor(this.r*2) + "px";
+            DOMelement.style.borderRadius = Math.floor(this.r*2) + "px";
         } //else alert(this.id + " @ " + this.r);
         
     }
