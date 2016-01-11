@@ -1,6 +1,43 @@
-/**
- * Created by Cheese on 13.05.2015.
- */
+function Direction(x1,y1,x2,y2, limit){
+    limit = limit || 1;
+
+    this.Distance = function (x1, y1) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
+    this.dX = x2 - x1;
+    this.dY = y2 - y1;
+
+    var EPSILON = 0.001;
+    while ((this.dX * this.dX + this.dY * this.dY) > limit*limit)
+    {
+        this.dX *= 0.9;
+        this.dY *= 0.9;
+    }
+    if (Math.abs(this.dX) < EPSILON) this.dX = 0;
+    if (Math.abs(this.dY) < EPSILON) this.dY = 0;
+}
+
+function getColor(classname) {
+    switch (classname)
+    {
+        case "sun":
+            return "#ffe029";
+        case "sky":
+            return "#7adfff";
+        case "eco":
+            return "#4aff60";
+        case "rose":
+            return "#ff4143";
+        case "deep":
+            return "#ff4de6";
+    }
+}
+
+function ping(id) {
+    var cell = Global.arr.filter(function (x) { return x.id == id })[0];
+    cell.additionalRadius = -cell.r;
+}
 
 var width = window.innerWidth
     || document.documentElement.clientWidth
@@ -12,6 +49,7 @@ var height = window.innerHeight
 
 function Bacteria(team)
 {
+    this.additionalRadius = 0;
     this.id = Math.random() * 100000000000000000;
     this.x = Math.floor(Math.random() * width);
     this.y = Math.floor(Math.random() * height);
@@ -19,101 +57,71 @@ function Bacteria(team)
     this.speed = width/(height*2)/Math.sqrt(this.r);
 
     this.target = {};
-    this.target.x = Math.floor(Math.random() * width);
-    this.target.y = Math.floor(Math.random() * height);
-
-
+    this.target.x = this.x;
+    this.target.y = this.y;
+    this.vector = new Direction(this.x, this.y, this.target.x, this.target.y);
+    
     this.className = team;
-
-
-    this.xCenter = function() {return this.x+Math.sqrt(this.r);};
-    this.yCenter = function() {return this.y-Math.sqrt(this.r);};
 
     this.GetAttributes = function(){
         return 'left: '+ this.x +'px; top: ' + this.y + 'px; position: absolute; width: ' + this.r + 'px; height: ' + this.r + 'px; border-radius: ' + this.r + 'px';
     };
 
-    document.getElementById("canvas").innerHTML += '<div class="'+this.className+'" id = "'+this.id+'" style ="' + this.GetAttributes() + '"/>';
+    document.getElementById("canvas").innerHTML += '<div class="' + this.className + '" id = "' + this.id + '" style ="' + this.GetAttributes() + '" onclick="ping(' + this.id + ')"/>';
 
-    this.Update = function(){
-        if ((this.xCenter()+this.speed < this.target.x) || (this.xCenter()-this.speed > this.target.x) || (this.yCenter()-this.speed > this.target.y) || (this.yCenter()+this.speed < this.target.y))
-        {
-            if (this.xCenter()+this.speed < this.target.x) this.x+=this.speed;
-            if (this.xCenter()-this.speed > this.target.x) this.x-=this.speed;
-            if (this.yCenter()-this.speed > this.target.y) this.y-=this.speed;
-            if (this.yCenter()+this.speed < this.target.y) this.y+=this.speed;
-        }
-        else
-        {
-            this.target.x = Math.floor(Math.random() * width);
-            this.target.y = Math.floor(Math.random() * height);
-        }
+    this.DOM = {};
 
+    this.Update = function () {
 
+        var outOfScreen = (this.x >= width - this.r) || (this.y >= height - this.r) || (this.x <= this.r) || (this.y <= this.r);
+        var targetReached = this.vector.Distance(this.x, this.y) < 1;
 
-        for(var i = 0; i < Global.size; i++)
-        {
-            if (Global.arr[i].id == this.id) continue;
-            var dist = Math.sqrt((this.xCenter() - Global.arr[i].xCenter())*(this.xCenter() - Global.arr[i].xCenter()) + (this.yCenter() - Global.arr[i].yCenter())*(this.yCenter() - Global.arr[i].yCenter()));
-            if (dist < this.r + Global.arr[i].r && this.r >= Global.arr[i].r)
-            {
-                if (this.className != Global.arr[i].className)
-                {
-                    if (this.className == "sky") {Global.Points.Sky += 5*Global.arr[i].r/this.r;}
-                    else if (this.className == "eco") {Global.Points.Eco += 5*Global.arr[i].r/this.r;}
-                    else if (this.className == "rose") {Global.Points.Rose += 5*Global.arr[i].r/this.r;}
-                    else if (this.className == "deep") {Global.Points.Deep += 5*Global.arr[i].r/this.r;}
-                    else if (this.className == "sun") {Global.Points.Sun += 5*Global.arr[i].r/this.r;}
-                }
-
-                this.r += width/(height*2)*Global.arr[i].r/this.r;
-                this.speed = width/(height*2)/Math.sqrt(this.r);
-
-                Global.arr[i].r = width/(height*2);
-                Global.arr[i].x = Math.floor(Math.random() * width);
-                Global.arr[i].y = Math.floor(Math.random() * height);
-                Global.arr[i].speed = width/(height*2);
-
-                Global.arr[i].target = {};
-                Global.arr[i].target.x = Math.floor(Math.random() * width);
-                Global.arr[i].target.y = Math.floor(Math.random() * height);
-            }
+        if (outOfScreen || targetReached) {
+            this.target.x = Math.random() * (width - this.r * 2) + this.r;
+            this.target.y = Math.random() * (height - this.r * 2) + this.r;
+            this.vector = new Direction(this.x, this.y, this.target.x, this.target.y);
         }
 
-        //if (this.r > 500)
-        //{
-        //    this.r = 50;
-        //
-        //    this.target = {};
-        //    this.target.x = Math.floor(Math.random() * limit*2);
-        //    this.target.y = Math.floor(Math.random() * limit);
-        //
-        //
-        //    for(var c = Global.size; c < Global.size+9; c++)
-        //    {
-        //        Global.arr[c] =  new Bacteria();
-        //        Global.arr[c].id = Math.random() * 100000000000000000;
-        //        Global.arr[c].x = this.xCenter() + Math.floor(Math.random() * this.r) - this.r/2;
-        //        Global.arr[c].y = this.yCenter() + Math.floor(Math.random() * this.r) - this.r/2;
-        //        Global.arr[c].r = 50;
-        //
-        //        Global.arr[c].target = {};
-        //        Global.arr[c].target.x = Math.floor(Math.random() * limit*2);
-        //        Global.arr[c].target.y = Math.floor(Math.random() * limit);
-        //        Global.arr[c].fill = this.fill;
-        //    }
-        //    Global.size+=9;
-        //}
+        this.x += this.vector.dX * this.speed;
+        this.y += this.vector.dY * this.speed;
 
-        var DOMelement = document.getElementById(this.id);
-        if (DOMelement != null)
+        this.DOM.style.top = this.y - this.r + "px";
+        this.DOM.style.left = this.x - this.r + "px";
+        this.DOM.style.height = Math.floor(this.r * 2) + "px";
+        this.DOM.style.width = Math.floor(this.r * 2) + "px";
+        this.DOM.style.borderRadius = Math.floor(this.r * 2) + "px";
+        this.DOM.style.boxShadow = "0 0 " + (this.r*2+this.additionalRadius) + "px " + getColor(this.className);
+
+        var xC = this.x;
+        var yC = this.y;
+
+        var self = this;
+
+        var Intersected = Global.arr.filter(function (x) {
+            var GxC = x.x;
+            var GyC = x.y;
+            var distSq = (xC - GxC) * (xC - GxC) + (yC - GyC) * (yC - GyC);
+            return distSq < (self.r + x.r) * (self.r + x.r) && self.r >= x.r && x.id != self.id && self.className != x.className;
+        });
+
+        for(var i = 0; i < Intersected.length; i++)
         {
-            DOMelement.style.top = this.y-this.r + "px";
-            DOMelement.style.left = this.x-this.r + "px";
-            DOMelement.style.height = Math.floor(this.r*2) + "px";
-            DOMelement.style.width = Math.floor(this.r*2) + "px";
-            DOMelement.style.borderRadius = Math.floor(this.r*2) + "px";
-        } //else alert(this.id + " @ " + this.r);
-        
+            Global.Points[this.className] += Math.floor(Intersected[i].r);
+            var growthCount = Intersected[i].r / this.r;
+            this.r += growthCount;
+            this.speed = width/(height*2)/Math.sqrt(this.r);
+
+            Intersected[i].r = width/(height*2);
+            Intersected[i].x = Math.floor(Math.random() * width);
+            Intersected[i].y = Math.floor(Math.random() * height);
+            Intersected[i].speed = Intersected[i].r;
+
+            Intersected[i].target = {};
+            Intersected[i].target.x = Intersected[i].x;
+            Intersected[i].target.y = Intersected[i].y;
+        }
+
+        if (this.additionalRadius < 0)
+            this.additionalRadius++;
     }
 }

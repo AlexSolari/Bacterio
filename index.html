@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
+﻿<!DOCTYPE html>
+<!-- saved from url=(0040)http://cheese.inet-tech.org.ua/Bacterio/ -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <title></title>
     <style>
@@ -8,8 +8,8 @@
             background: linear-gradient(90deg ,#000000, #02000c);
             color: white;
             font-size: 14pt;
+            overflow: hidden;
         }
-
 
         .sun{
             background-color: #ffe029;
@@ -55,15 +55,22 @@
         .deepLabel{
             color: #ff00e1;
         }
+        #fpsMeter{
+            float: right;
+            color: white;
+        }
     </style>
     <script src="bacteria.js"></script>
     <script>
 
+        var CurrentSecondNumber = 0;
+        var CurrentFrameNumber = 0;
+        var LastSecondFrameNumber = 0;
         var Global= {};
         Global.arr = [];
-        Global.size = 60;
+        Global.size = 150;
         Global.cursorBlackHole = false;
-        Global.cursorBlackHolePower = 4;
+        Global.cursorBlackHolePower = 20;
 
         Global.Points = {};
         Global.Points.Eco = 0;
@@ -73,19 +80,22 @@
         Global.Points.Sun = 0;
 
         Global.IntervalID = 0;
+        Global.Interval = 16;
 
-        function startGame(interval)
+        function startGame(interval, size)
         {
+            Global.Interval = interval || Global.Interval;
             Global.arr = [];
-            Global.size = 60;
-            Global.Points.Eco = 0;
-            Global.Points.Sky = 0;
-            Global.Points.Deep = 0;
-            Global.Points.Rose = 0;
-            Global.Points.Sun = 0;
+            Global.size = size || Global.size;
+            Global.Points.eco = 0;
+            Global.Points.sky = 0;
+            Global.Points.deep = 0;
+            Global.Points.rose = 0;
+            Global.Points.sun = 0;
 
-            document.getElementById("canvas").innerHTML =
-                    '<div class="skyLabel">Team SKY: <span id="sky">0</span></div>\
+            document.getElementById("canvas").innerHTML = 
+                    '<div id="fpsMeter"></div>\
+                     <div class="skyLabel">Team SKY: <span id="sky">0</span></div>\
                      <div class="ecoLabel">Team ECO: <span id="eco">0</span></div>\
                      <div class="sunLabel">Team SUN: <span id="sun">0</span></div>\
                      <div class="deepLabel">Team DEEP: <span id="deep">0</span></div>\
@@ -101,26 +111,35 @@
                 else className = "deep";
                 Global.arr[i] = new Bacteria(className);
             }
+            for (var i = 0; i < Global.size; i++) {
+                Global.arr[i].DOM = document.getElementById(Global.arr[i].id);
+            }
 
             clearInterval(Global.IntervalID);
-            Global.IntervalID = setInterval(function(){
+            Global.IntervalID = setInterval(function () {
+                if (CurrentSecondNumber != new Date().getSeconds())
+                {
+                    document.getElementById("fpsMeter").innerHTML = CurrentFrameNumber - LastSecondFrameNumber + "fps";
+                    LastSecondFrameNumber = CurrentFrameNumber;
+                    CurrentSecondNumber = new Date().getSeconds();
+                }
+                CurrentFrameNumber++;
+                document.getElementById("sky").innerHTML = Math.floor(Global.Points.sky);
+                document.getElementById("eco").innerHTML = Math.floor(Global.Points.eco);
+                document.getElementById("sun").innerHTML = Math.floor(Global.Points.sun);
+                document.getElementById("deep").innerHTML = Math.floor(Global.Points.deep);
+                document.getElementById("rose").innerHTML = Math.floor(Global.Points.rose);
                 for(var i = 0; i < Global.size; i++)
                 {
-                    document.getElementById("sky").innerHTML = Math.floor(Global.Points.Sky);
-                    document.getElementById("eco").innerHTML = Math.floor(Global.Points.Eco);
-                    document.getElementById("sun").innerHTML = Math.floor(Global.Points.Sun);
-                    document.getElementById("deep").innerHTML = Math.floor(Global.Points.Deep);
-                    document.getElementById("rose").innerHTML = Math.floor(Global.Points.Rose);
                     if (Global.cursorBlackHole)
                     {
-                        if (Global.arr[i].xCenter() < Cursor.x) Global.arr[i].x+=Global.cursorBlackHolePower;
-                        if (Global.arr[i].xCenter() > Cursor.x) Global.arr[i].x-=Global.cursorBlackHolePower;
-                        if (Global.arr[i].yCenter() > Cursor.y) Global.arr[i].y-=Global.cursorBlackHolePower;
-                        if (Global.arr[i].yCenter() < Cursor.y) Global.arr[i].y+=Global.cursorBlackHolePower;
+                        Global.arr[i].target.x = Cursor.x;
+                        Global.arr[i].target.y = Cursor.y;
+                        Global.arr[i].vector = new Direction(Global.arr[i].x, Global.arr[i].y, Global.arr[i].target.x, Global.arr[i].target.y, Global.cursorBlackHolePower);
                     }
                     Global.arr[i].Update();
                 }
-            }, interval);
+            }, Global.Interval);
         }
 
         Cursor = {};
@@ -131,16 +150,8 @@
             Cursor.y = e.clientY;
         };
 
-        window.onload = function(){
-            startGame(50);
-        };
+        window.onload = startGame;
     </script>
 </head>
-<body id="canvas">
-<div class="skyLabel">Team SKY: <span id="sky">0</span></div>
-<div class="ecoLabel">Team ECO: <span id="eco">0</span></div>
-<div class="sunLabel">Team SUN: <span id="sun">0</span></div>
-<div class="deepLabel">Team DEEP: <span id="deep">0</span></div>
-<div class="roseLabel">Team ROSE: <span id="rose">0</span></div>
-</body>
+<body id="canvas"></body>
 </html>
