@@ -8,7 +8,7 @@ GameScene.prototype.Add = function(entity) {
     this.Entities.push(entity);
 }
 
-GameScene.prototype.Clear = function (entity) {
+GameScene.prototype.Clear = function () {
     this.Entities = [];
 }
 
