@@ -4,7 +4,7 @@ function Bacteria()
     this.x = Math.floor(Math.random() * width);
     this.y = Math.floor(Math.random() * height);
     this.radius = width/(height*2);
-    this.speed = width/(height*2)/Math.sqrt(this.radius);
+    this.speed = this.radius * 2;
 
     this.target = {};
     this.target.x = this.x;
@@ -78,12 +78,14 @@ Bacteria.prototype.Update = function () {
 
         var growthCount = Intersected[i].radius / this.radius;
         this.radius += growthCount;
-        this.speed = width / (height * 2) / Math.sqrt(this.radius);
+
+        if (this.speed > 1)
+            this.speed = this.speed - (Intersected[i].radius / this.radius) * (Intersected[i].radius / this.radius);
 
         Intersected[i].radius = width / (height * 2);
         Intersected[i].x = Math.floor(Math.random() * width);
         Intersected[i].y = Math.floor(Math.random() * height);
-        Intersected[i].speed = Intersected[i].radius;
+        Intersected[i].speed = Intersected[i].radius * 2;
 
         Intersected[i].target = {};
         Intersected[i].target.x = Intersected[i].x;
