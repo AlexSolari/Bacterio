@@ -65,36 +65,34 @@
             color: white;
         }
     </style>
+    <script src="vector.js"></script>
     <script src="bacteria.js"></script>
     <script src="gamescene.js"></script>
     <script src="gamemanager.js"></script>
     <script>
-        var Global = {};
-
-        Global.cursorBlackHole = false;
-        Global.cursorBlackHolePower = 20;
-
-        Global.DefaultSize = 150;
-
-        Global.Points = {};
-        Global.Points.Eco = 0;
-        Global.Points.Sky = 0;
-        Global.Points.Deep = 0;
-        Global.Points.Rose = 0;
-        Global.Points.Sun = 0;
-
         Cursor = {};
+        Manager = {};
 
-        window.onmousemove = function(e)
-        {
-            Cursor.x = e.clientX;
-            Cursor.y = e.clientY;
-        };
+        var width = 0;
+        var height = 0;
 
         window.onload = function () {
-            Global.Manager = new GameManager();
-            Global.Manager.Initialize();
-            Global.Manager.Start(Global.DefaultSize);
+            width = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+            height = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+
+            Manager = new GameManager();
+            Manager.Initialize();
+            Manager.Start();
+
+            window.onmousemove = function (e) {
+                Cursor.x = e.clientX;
+                Cursor.y = e.clientY;
+            };
         };
     </script>
 </head>
