@@ -15,6 +15,11 @@ GameScene.prototype.Clear = function (entity) {
 GameScene.prototype.Update = function() {
     this.Entities.forEach(function (entity) {
         entity.Update();
+    });
+}
+
+GameScene.prototype.Render = function () {
+    this.Entities.forEach(function (entity) {
         entity.Render();
     });
 }

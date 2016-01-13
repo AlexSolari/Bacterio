@@ -40,7 +40,9 @@ GameManager.prototype.Start = function (size) {
     clearInterval(this.IntervalID);
     this.IntervalID = setInterval(function () {
         self.CountFPS();
+
         self.Scene.Update();
+        self.Scene.Render();
     }, this.Interval);
 }
 

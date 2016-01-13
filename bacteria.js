@@ -60,7 +60,11 @@ Bacteria.prototype.Update = function () {
 
     var self = this;
 
-    var Intersected = Manager.Scene.Entities.filter(function (another) {
+    var Nearest = Manager.Scene.Entities.filter(function (another) {
+        return self.x * 2 > another.x || self.x / 2 < another.x || self.y * 2 > another.y || self.y / 2 < another.y;
+    });
+
+    var Intersected = Nearest.filter(function (another) {
         if (self.radius < another.radius || another.id == self.id || self.className == another.className)
             return false;
 
@@ -72,24 +76,25 @@ Bacteria.prototype.Update = function () {
         return dx < dy * dy;
     });
 
-    for (var i = 0; i < Intersected.length; i++) {
+    for (var index in Intersected) {
+        var Entity = Intersected[index];
 
-        Manager.AddPoints(this.className, Intersected[i].radius);
+        Manager.AddPoints(this.className, Entity.radius);
 
-        var growthCount = Intersected[i].radius / this.radius;
+        var growthCount = Entity.radius / this.radius;
         this.radius += growthCount;
 
         if (this.speed > 1)
-            this.speed = this.speed - (Intersected[i].radius / this.radius) * (Intersected[i].radius / this.radius);
+            this.speed = this.speed - (Entity.radius / this.radius) * (Entity.radius / this.radius);
 
-        Intersected[i].radius = width / (height * 2);
-        Intersected[i].x = Math.floor(Math.random() * width);
-        Intersected[i].y = Math.floor(Math.random() * height);
-        Intersected[i].speed = Intersected[i].radius * 2;
+        Entity.radius = width / (height * 2);
+        Entity.x = Math.floor(Math.random() * width);
+        Entity.y = Math.floor(Math.random() * height);
+        Entity.speed = Entity.radius * 2;
 
-        Intersected[i].target = {};
-        Intersected[i].target.x = Intersected[i].x;
-        Intersected[i].target.y = Intersected[i].y;
+        Entity.target = {};
+        Entity.target.x = Entity.x;
+        Entity.target.y = Entity.y;
     }
 
 
