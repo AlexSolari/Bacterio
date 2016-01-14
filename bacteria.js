@@ -1,6 +1,6 @@
 function Bacteria()
 {
-    this.id = Math.random();
+    this.id = ("bacterio-" + Math.random()).replace('.', '');
     this.x = Math.floor(Math.random() * width);
     this.y = Math.floor(Math.random() * height);
     this.radius = width/(height*2);
@@ -20,23 +20,27 @@ function Bacteria()
         return "deep";
     })();
 
-    Manager.Scene.Screen.innerHTML += '<div class="bacteria ' + this.className + '" id = "' + this.id + '"/>';
+    Manager.Scene.Screen.append('<div class="bacteria ' + this.className + '" id = "' + this.id + '"/>');
 
     this.DOM = {};
 }
 
 Bacteria.prototype.InitDOM = function () {
-    this.DOM = document.getElementById(this.id);
+    this.DOM = $("#"+this.id);
 }
 
 Bacteria.prototype.Render = function () {
     var doubledRadius = this.radius * 2 + "px";
 
-    this.DOM.style.top = this.y - this.radius + "px";
-    this.DOM.style.left = this.x - this.radius + "px";
-    this.DOM.style.height = doubledRadius;
-    this.DOM.style.width = doubledRadius;
-    this.DOM.style.borderRadius = doubledRadius;
+    var props = {
+        "top" : this.y - this.radius + "px",
+        "left" : this.x - this.radius + "px",
+        "height" : doubledRadius,
+        "width" : doubledRadius,
+        "border-radius" : doubledRadius,
+    };
+
+    this.DOM.css(props);
 }
 
 Bacteria.prototype.Update = function () {
@@ -85,7 +89,9 @@ Bacteria.prototype.Update = function () {
         this.radius += growthCount;
 
         if (this.speed > 1)
-            this.speed = this.speed - (Entity.radius / this.radius) * (Entity.radius / this.radius);
+            this.speed = this.speed - growthCount * growthCount;
+        if (this.speed < 1)
+            this.speed = 1;
 
         Entity.radius = width / (height * 2);
         Entity.x = Math.floor(Math.random() * width);
@@ -96,6 +102,4 @@ Bacteria.prototype.Update = function () {
         Entity.target.x = Entity.x;
         Entity.target.y = Entity.y;
     }
-
-
 }

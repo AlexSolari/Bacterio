@@ -48,7 +48,7 @@ GameManager.prototype.Start = function (size) {
 
 GameManager.prototype.CountFPS = function () {
     if (this.CurrentSecondNumber != new Date().getSeconds()) {
-        document.getElementById("fpsMeter").innerHTML = this.CurrentFrameNumber - this.LastSecondFrameNumber + "fps";
+        $("#fpsMeter").html(this.CurrentFrameNumber - this.LastSecondFrameNumber + "fps");
         this.LastSecondFrameNumber = this.CurrentFrameNumber;
         this.CurrentSecondNumber = new Date().getSeconds();
     }
