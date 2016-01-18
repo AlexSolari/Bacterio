@@ -11,30 +11,13 @@
     <script src="gamescene.js"></script>
     <script src="gamemanager.js"></script>
     <script>
-        Cursor = {};
-        Manager = {};
+        var Game;
 
-        var width = 0;
-        var height = 0;
-
-        window.onload = function () {
-            width = window.innerWidth
-                || document.documentElement.clientWidth
-                || document.body.clientWidth;
-
-            height = window.innerHeight
-                || document.documentElement.clientHeight
-                || document.body.clientHeight;
-
-            Manager = new GameManager();
-            Manager.Initialize();
-            Manager.Start();
-
-            $("body").on("mousemove", function (e) {
-                Cursor.x = e.clientX;
-                Cursor.y = e.clientY;
-            });
-        };
+        $(function () {
+            Game = new GameManager();
+            Game.Initialize();
+            Game.Start();
+        });
     </script>
 </head>
 <body id="canvas"></body>

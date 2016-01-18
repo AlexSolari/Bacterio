@@ -1,6 +1,6 @@
 function GameManager() {
     this.BlackHoleEnabled = false;
-    this.BlackHolePower = 15;
+    this.BlackHolePower = 2;
 
     this.Interval = 0;
     this.IntervalID = 0;
@@ -12,14 +12,35 @@ function GameManager() {
     this.LastSecondFrameNumber = 0;
 
     this.Points = {};
+    this.Cursor = {};
+}
+
+GameManager.prototype.Restart = function () {
+    this.Initialize();
+    this.Start();
 }
 
 GameManager.prototype.Initialize = function () {
+    var self = this;
+
+    this.ScreenWidth = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+    this.ScreenHeight = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+
     this.Points.eco = 0;
     this.Points.sky = 0;
     this.Points.deep = 0;
     this.Points.rose = 0;
     this.Points.sun = 0;
+
+    $("body").on("mousemove", function (e) {
+        self.Cursor.x = e.clientX;
+        self.Cursor.y = e.clientY;
+    });
 
     this.Scene.Initialize();
 }
@@ -30,7 +51,6 @@ GameManager.prototype.Start = function (size) {
     var self = this;
 
     this.Scene.Clear();
-    this.Initialize();
 
     for (var i = 0; i < size; i++) {
         this.Scene.Add(new Bacteria());
@@ -57,7 +77,7 @@ GameManager.prototype.CountFPS = function () {
 
 GameManager.prototype.AddPoints = function (classname, points) {
     this.Points[classname] += points;
-    document.getElementById(classname).innerHTML = Math.floor(this.Points[classname]);
+    $("#"+classname).html(Math.floor(this.Points[classname]));
 }
 
 GameManager.prototype.ToggleBlackHole = function () {

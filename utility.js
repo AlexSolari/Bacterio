@@ -5,8 +5,12 @@ var $ = function (selector, context) {
 
         searchResult = context.querySelectorAll(selector);
     }
-    else {
+    else if ( typeof (selector) != "function" ){
         searchResult = selector;
+    }
+    else {
+        window.onload = selector;
+        return;
     }
 
     searchResult.css = function(name, value) {
