@@ -2,10 +2,17 @@ function GameManager() {
     this.BlackHoleEnabled = false;
     this.BlackHolePower = 2;
 
-    this.Interval = 0;
     this.IntervalID = 0;
 
-    this.Scene = new GameScene();
+    this.ScreenWidth = window.innerWidth
+                || document.documentElement.clientWidth
+                || document.body.clientWidth;
+
+    this.ScreenHeight = window.innerHeight
+                || document.documentElement.clientHeight
+                || document.body.clientHeight;
+
+    this.Scene = new GameScene(this.ScreenWidth, this.ScreenHeight);
 
     this.CurrentSecondNumber = 0;
     this.CurrentFrameNumber = 0;
@@ -15,21 +22,12 @@ function GameManager() {
     this.Cursor = {};
 }
 
-GameManager.prototype.Restart = function () {
-    this.Initialize();
-    this.Start();
+GameManager.prototype.Restart = function (size, targetFPS) {
+    this.Start(size, targetFPS);
 }
 
 GameManager.prototype.Initialize = function () {
     var self = this;
-
-    this.ScreenWidth = window.innerWidth
-                || document.documentElement.clientWidth
-                || document.body.clientWidth;
-
-    this.ScreenHeight = window.innerHeight
-                || document.documentElement.clientHeight
-                || document.body.clientHeight;
 
     this.Points.eco = 0;
     this.Points.sky = 0;
@@ -41,12 +39,11 @@ GameManager.prototype.Initialize = function () {
         self.Cursor.x = e.clientX;
         self.Cursor.y = e.clientY;
     });
-
-    this.Scene.Initialize();
 }
 
-GameManager.prototype.Start = function (size) {
+GameManager.prototype.Start = function (size, targetFPS) {
     size = size || 150;
+    targetFPS = targetFPS || 1000;
 
     var self = this;
 
@@ -55,7 +52,6 @@ GameManager.prototype.Start = function (size) {
     for (var i = 0; i < size; i++) {
         this.Scene.Add(new Bacteria());
     }
-    this.Scene.InitializeEntitiesDOM();
 
     clearInterval(this.IntervalID);
     this.IntervalID = setInterval(function () {
@@ -63,7 +59,7 @@ GameManager.prototype.Start = function (size) {
 
         self.Scene.Update();
         self.Scene.Render();
-    }, this.Interval);
+    }, 1000 / targetFPS);
 }
 
 GameManager.prototype.CountFPS = function () {

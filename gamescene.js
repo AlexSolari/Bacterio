@@ -1,7 +1,10 @@
-function GameScene()
+function GameScene(width, height)
 {
     this.Entities = [];
-    this.Screen = $("#canvas");
+    var canvas = $("#canvas");
+    canvas[0].width = width;
+    canvas[0].height = height;
+    this.Screen = canvas[0].getContext("2d");
 }
 
 GameScene.prototype.Add = function(entity) {
@@ -10,6 +13,7 @@ GameScene.prototype.Add = function(entity) {
 
 GameScene.prototype.Clear = function () {
     this.Entities = [];
+    this.Screen.clearRect(0, 0, Game.ScreenWidth, Game.ScreenHeight);
 }
 
 GameScene.prototype.Update = function() {
@@ -21,20 +25,5 @@ GameScene.prototype.Update = function() {
 GameScene.prototype.Render = function () {
     this.Entities.forEach(function (entity) {
         entity.Render();
-    });
-}
-
-GameScene.prototype.Initialize = function () {
-    this.Screen.html('<div id="fpsMeter"></div>\
-                      <div class="skyLabel">Team SKY: <span id="sky">0</span></div>\
-                      <div class="ecoLabel">Team ECO: <span id="eco">0</span></div>\
-                      <div class="sunLabel">Team SUN: <span id="sun">0</span></div>\
-                      <div class="deepLabel">Team DEEP: <span id="deep">0</span></div>\
-                      <div class="roseLabel">Team ROSE: <span id="rose">0</span></div>');
-}
-
-GameScene.prototype.InitializeEntitiesDOM = function () {
-    this.Entities.forEach(function (entity) {
-        entity.InitDOM();
     });
 }

@@ -3,7 +3,7 @@ function Bacteria()
     this.id = ("bacterio-" + Math.random()).replace('.', '');
     this.x = Math.floor(Math.random() * Game.ScreenWidth);
     this.y = Math.floor(Math.random() * Game.ScreenHeight);
-    this.radius = Game.ScreenWidth/(Game.ScreenHeight*2);
+    this.radius = Game.ScreenWidth/(Game.ScreenHeight*2) + 1;
     this.speed = this.radius * 2;
 
     this.target = {};
@@ -19,35 +19,48 @@ function Bacteria()
         else if (seed < 0.8) return "rose";
         return "deep";
     })();
+}
 
-    Game.Scene.Screen.append('<div class="bacteria ' + this.className + '" id = "' + this.id + '"></div>');
-
-    this.DOM = {};
+Bacteria.prototype.GetColor = function () {
+    switch (this.className) {
+        case "sun":
+            return "#ffe029";
+        case "sky":
+            return "#36fff3";
+        case "eco":
+            return "#3dff00";
+        case "rose":
+            return "#ff0400";
+        case "deep":
+            return "#ff00e1";
+        default:
+            return "white";
+    }
 }
 
 Bacteria.prototype.DistanceToTarget = function () {
     return Math.sqrt((this.x - this.target.x) * (this.x - this.target.x) + (this.y - this.target.y) * (this.y - this.target.y));
 }
 
-Bacteria.prototype.InitDOM = function () {
-    this.DOM = $("#"+this.id);
+Bacteria.prototype.Prerender = function () {
+    Game.Scene.Screen.beginPath();
+    Game.Scene.Screen.globalCompositeOperation = 'destination-out'
+    Game.Scene.Screen.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    Game.Scene.Screen.fill();
+    Game.Scene.Screen.closePath();
 }
 
 Bacteria.prototype.Render = function () {
-    var doubledRadius = this.radius * 2 + "px";
-
-    var props = {
-        "top" : this.y - this.radius + "px",
-        "left" : this.x - this.radius + "px",
-        "height" : doubledRadius,
-        "width" : doubledRadius,
-        "border-radius" : doubledRadius,
-    };
-
-    this.DOM.css(props);
+    Game.Scene.Screen.beginPath();
+    Game.Scene.Screen.globalCompositeOperation = 'source-over'
+    Game.Scene.Screen.arc(this.x, this.y, this.radius-1, 0, 2 * Math.PI);
+    Game.Scene.Screen.fillStyle = this.GetColor();
+    Game.Scene.Screen.fill();
+    Game.Scene.Screen.closePath();
 }
 
 Bacteria.prototype.Update = function () {
+    this.Prerender();
 
     var outOfScreen = (this.x >= Game.ScreenWidth - this.radius) || (this.y >= Game.ScreenHeight - this.radius) || (this.x <= this.radius) || (this.y <= this.radius);
     var targetReached = this.DistanceToTarget() < 1;
@@ -96,7 +109,10 @@ Bacteria.prototype.Update = function () {
         if (this.speed < 1)
             this.speed = 1;
 
-        Entity.radius = Game.ScreenWidth / (Game.ScreenHeight * 2);
+
+        Entity.Prerender();
+
+        Entity.radius = Game.ScreenWidth / (Game.ScreenHeight * 2) + 1;
         Entity.x = Math.floor(Math.random() * Game.ScreenWidth);
         Entity.y = Math.floor(Math.random() * Game.ScreenHeight);
         Entity.speed = Entity.radius * 2;
@@ -104,5 +120,7 @@ Bacteria.prototype.Update = function () {
         Entity.target = {};
         Entity.target.x = Entity.x;
         Entity.target.y = Entity.y;
+
+        Entity.Render();
     }
 }

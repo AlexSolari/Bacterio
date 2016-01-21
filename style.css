@@ -1,41 +1,21 @@
         body{
             margin: 0;
-            position: fixed;
-            background: black;
-            color: white;
             font-size: 14pt;
             overflow: hidden;
-            height: 100%;
-            width: 100%;
+            background: black;
         }
-        
-        .bacteria{
+
+        body div{
+            z-index: 500;
+        }
+
+        canvas{
+            top: 0;
+            left: 0;
+            z-index: 0;
             position: fixed;
-        }
-
-        .sun{
-            background-color: #ffe029;
-            box-shadow: 0 0 35px #fffe46;
-        }
-
-        .sky{
-            background-color: #36fff3;
-            box-shadow: 0 0 35px #7adfff;
-        }
-
-        .eco{
-            background-color: #3dff00;
-            box-shadow: 0 0 35px #4aff60;
-        }
-
-        .rose{
-            background-color: #ff0400;
-            box-shadow: 0 0 35px #ff4143;
-        }
-
-        .deep{
-            background-color: #ff00e1;
-            box-shadow: 0 0 35px #ff4de6;
+            background: transparent;
+            color: white;
         }
 
         .sunLabel{
