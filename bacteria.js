@@ -20,9 +20,13 @@ function Bacteria()
         return "deep";
     })();
 
-    Game.Scene.Screen.append('<div class="bacteria ' + this.className + '" id = "' + this.id + '"/>');
+    Game.Scene.Screen.append('<div class="bacteria ' + this.className + '" id = "' + this.id + '"></div>');
 
     this.DOM = {};
+}
+
+Bacteria.prototype.DistanceToTarget = function () {
+    return Math.sqrt((this.x - this.target.x) * (this.x - this.target.x) + (this.y - this.target.y) * (this.y - this.target.y));
 }
 
 Bacteria.prototype.InitDOM = function () {
@@ -46,7 +50,7 @@ Bacteria.prototype.Render = function () {
 Bacteria.prototype.Update = function () {
 
     var outOfScreen = (this.x >= Game.ScreenWidth - this.radius) || (this.y >= Game.ScreenHeight - this.radius) || (this.x <= this.radius) || (this.y <= this.radius);
-    var targetReached = this.vector.DistanceFromEnd(this.x, this.y) < 1;
+    var targetReached = this.DistanceToTarget() < 1;
 
     if (Game.BlackHoleEnabled) {
         this.target = Game.Cursor;
