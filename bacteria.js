@@ -1,16 +1,14 @@
 function Bacteria()
 {
     this.id = ("bacterio-" + Math.random()).replace('.', '');
-    this.x = Math.floor(Math.random() * Game.ScreenWidth);
-    this.y = Math.floor(Math.random() * Game.ScreenHeight);
+    this.x = Math.random() * Game.ScreenWidth;
+    this.y = Math.random() * Game.ScreenHeight;
     this.radius = Game.ScreenWidth/(Game.ScreenHeight*2) + 1;
     this.speed = this.radius * 2;
-
     this.target = {};
     this.target.x = this.x;
     this.target.y = this.y;
-    this.vector = new Vector(this.x, this.y, this.target.x, this.target.y);
-    
+    this.vector = new Vector(this.x, this.y, this.target.x, this.target.y);   
     this.className = (function () {
         var seed = Math.random();
         if (seed < 0.2) return "sun";
@@ -19,6 +17,7 @@ function Bacteria()
         else if (seed < 0.8) return "rose";
         return "deep";
     })();
+    this.color = this.GetColor();
 }
 
 Bacteria.prototype.GetColor = function () {
@@ -42,26 +41,16 @@ Bacteria.prototype.DistanceToTarget = function () {
     return Math.sqrt((this.x - this.target.x) * (this.x - this.target.x) + (this.y - this.target.y) * (this.y - this.target.y));
 }
 
-Bacteria.prototype.Prerender = function () {
-    Game.Scene.Screen.beginPath();
-    Game.Scene.Screen.globalCompositeOperation = 'destination-out'
-    Game.Scene.Screen.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-    Game.Scene.Screen.fill();
-    Game.Scene.Screen.closePath();
-}
-
 Bacteria.prototype.Render = function () {
     Game.Scene.Screen.beginPath();
     Game.Scene.Screen.globalCompositeOperation = 'source-over'
     Game.Scene.Screen.arc(this.x, this.y, this.radius-1, 0, 2 * Math.PI);
-    Game.Scene.Screen.fillStyle = this.GetColor();
+    Game.Scene.Screen.fillStyle = this.color;
     Game.Scene.Screen.fill();
     Game.Scene.Screen.closePath();
 }
 
 Bacteria.prototype.Update = function () {
-    this.Prerender();
-
     var outOfScreen = (this.x >= Game.ScreenWidth - this.radius) || (this.y >= Game.ScreenHeight - this.radius) || (this.x <= this.radius) || (this.y <= this.radius);
     var targetReached = this.DistanceToTarget() < 1;
 
@@ -96,25 +85,20 @@ Bacteria.prototype.Update = function () {
         return dx < dy * dy;
     });
 
-    for (var index in Intersected) {
-        var Entity = Intersected[index];
+    Intersected.forEach(function (Entity) {
+        Game.AddPoints(self.className, Entity.radius);
 
-        Game.AddPoints(this.className, Entity.radius);
+        var growthCount = Entity.radius / self.radius;
+        self.radius += growthCount;
 
-        var growthCount = Entity.radius / this.radius;
-        this.radius += growthCount;
-
-        if (this.speed > 1)
-            this.speed = this.speed - growthCount * growthCount;
-        if (this.speed < 1)
-            this.speed = 1;
-
-
-        Entity.Prerender();
+        if (self.speed > 1)
+            self.speed = self.speed - growthCount * growthCount;
+        if (self.speed < 1)
+            self.speed = 1;
 
         Entity.radius = Game.ScreenWidth / (Game.ScreenHeight * 2) + 1;
-        Entity.x = Math.floor(Math.random() * Game.ScreenWidth);
-        Entity.y = Math.floor(Math.random() * Game.ScreenHeight);
+        Entity.x = Math.random() * Game.ScreenWidth;
+        Entity.y = Math.random() * Game.ScreenHeight;
         Entity.speed = Entity.radius * 2;
 
         Entity.target = {};
@@ -122,5 +106,5 @@ Bacteria.prototype.Update = function () {
         Entity.target.y = Entity.y;
 
         Entity.Render();
-    }
+    });
 }

@@ -5,6 +5,8 @@ function GameScene(width, height)
     canvas[0].width = width;
     canvas[0].height = height;
     this.Screen = canvas[0].getContext("2d");
+    this.Screen.width = width;
+    this.Screen.height = height;
 }
 
 GameScene.prototype.Add = function(entity) {
@@ -23,6 +25,7 @@ GameScene.prototype.Update = function() {
 }
 
 GameScene.prototype.Render = function () {
+    this.Screen.clearRect(0, 0, this.Screen.width, this.Screen.height);
     this.Entities.forEach(function (entity) {
         entity.Render();
     });
