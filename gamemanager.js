@@ -22,11 +22,11 @@ function GameManager() {
     this.Cursor = {};
 }
 
-GameManager.prototype.Restart = function (size, targetFPS) {
+GameManager.prototype.Restart = function Restart(size, targetFPS) {
     this.Start(size, targetFPS);
 }
 
-GameManager.prototype.Initialize = function () {
+GameManager.prototype.Initialize = function Initialize() {
     var self = this;
 
     this.Points.eco = 0;
@@ -35,15 +35,15 @@ GameManager.prototype.Initialize = function () {
     this.Points.rose = 0;
     this.Points.sun = 0;
 
-    $("body").on("mousemove", function (e) {
+    $("body").on("mousemove", function SaveMousePosition(e) {
         self.Cursor.x = e.clientX;
         self.Cursor.y = e.clientY;
     });
 }
 
-GameManager.prototype.Start = function (size, targetFPS) {
+GameManager.prototype.Start = function Start(size, targetFPS) {
     size = size || 150;
-    targetFPS = targetFPS || 1000;
+    targetFPS = targetFPS || 60;
 
     var self = this;
 
@@ -54,7 +54,7 @@ GameManager.prototype.Start = function (size, targetFPS) {
     }
 
     clearInterval(this.IntervalID);
-    this.IntervalID = setInterval(function () {
+    this.IntervalID = setInterval(function GameLoop() {
         self.CountFPS();
 
         self.Scene.Update();
@@ -62,7 +62,7 @@ GameManager.prototype.Start = function (size, targetFPS) {
     }, 1000 / targetFPS);
 }
 
-GameManager.prototype.CountFPS = function () {
+GameManager.prototype.CountFPS = function CountFPS() {
     if (this.CurrentSecondNumber != new Date().getSeconds()) {
         $("#fpsMeter").html(this.CurrentFrameNumber - this.LastSecondFrameNumber + "fps");
         this.LastSecondFrameNumber = this.CurrentFrameNumber;
@@ -71,11 +71,11 @@ GameManager.prototype.CountFPS = function () {
     this.CurrentFrameNumber++;
 }
 
-GameManager.prototype.AddPoints = function (classname, points) {
+GameManager.prototype.AddPoints = function AddPoints(classname, points) {
     this.Points[classname] += points;
     $("#"+classname).html(Math.floor(this.Points[classname]));
 }
 
-GameManager.prototype.ToggleBlackHole = function () {
+GameManager.prototype.ToggleBlackHole = function ToggleBlackHole() {
     this.BlackHoleEnabled = !this.BlackHoleEnabled;
 }

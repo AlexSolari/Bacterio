@@ -9,24 +9,24 @@ function GameScene(width, height)
     this.Screen.height = height;
 }
 
-GameScene.prototype.Add = function(entity) {
+GameScene.prototype.Add = function Add(entity) {
     this.Entities.push(entity);
 }
 
-GameScene.prototype.Clear = function () {
+GameScene.prototype.Clear = function Clear() {
     this.Entities = [];
     this.Screen.clearRect(0, 0, Game.ScreenWidth, Game.ScreenHeight);
 }
 
-GameScene.prototype.Update = function() {
-    this.Entities.forEach(function (entity) {
+GameScene.prototype.Update = function Update() {
+    this.Entities.forEach(function EntityUpdate(entity) {
         entity.Update();
     });
 }
 
-GameScene.prototype.Render = function () {
+GameScene.prototype.Render = function Render() {
     this.Screen.clearRect(0, 0, this.Screen.width, this.Screen.height);
-    this.Entities.forEach(function (entity) {
+    this.Entities.forEach(function EntityRender(entity) {
         entity.Render();
     });
 }

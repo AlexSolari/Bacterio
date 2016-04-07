@@ -20,7 +20,7 @@ function Bacteria()
     this.color = this.GetColor();
 }
 
-Bacteria.prototype.GetColor = function () {
+Bacteria.prototype.GetColor = function GetColor() {
     switch (this.className) {
         case "sun":
             return "#ffe029";
@@ -37,11 +37,11 @@ Bacteria.prototype.GetColor = function () {
     }
 }
 
-Bacteria.prototype.DistanceToTarget = function () {
+Bacteria.prototype.DistanceToTarget = function DistanceToTarget() {
     return Math.sqrt((this.x - this.target.x) * (this.x - this.target.x) + (this.y - this.target.y) * (this.y - this.target.y));
 }
 
-Bacteria.prototype.Render = function () {
+Bacteria.prototype.Render = function Render() {
     Game.Scene.Screen.beginPath();
     Game.Scene.Screen.globalCompositeOperation = 'source-over'
     Game.Scene.Screen.arc(this.x, this.y, this.radius-1, 0, 2 * Math.PI);
@@ -50,7 +50,7 @@ Bacteria.prototype.Render = function () {
     Game.Scene.Screen.closePath();
 }
 
-Bacteria.prototype.Update = function () {
+Bacteria.prototype.Update = function Update() {
     var outOfScreen = (this.x >= Game.ScreenWidth - this.radius) || (this.y >= Game.ScreenHeight - this.radius) || (this.x <= this.radius) || (this.y <= this.radius);
     var targetReached = this.DistanceToTarget() < 1;
 
@@ -69,11 +69,11 @@ Bacteria.prototype.Update = function () {
 
     var self = this;
 
-    var Nearest = Game.Scene.Entities.filter(function (another) {
+    var Nearest = Game.Scene.Entities.filter(function FindNearest(another) {
         return self.x * 2 > another.x && self.x / 2 < another.x && self.y * 2 > another.y && self.y / 2 < another.y;
     });
 
-    var Intersected = Nearest.filter(function (another) {
+    var Intersected = Nearest.filter(function FindIntersected(another) {
         if (self.radius < another.radius || another.id == self.id || self.className == another.className)
             return false;
 
@@ -85,7 +85,7 @@ Bacteria.prototype.Update = function () {
         return dx < dy * dy;
     });
 
-    Intersected.forEach(function (Entity) {
+    Intersected.forEach(function ProceedIntersected(Entity) {
         Game.AddPoints(self.className, Entity.radius);
 
         var growthCount = Entity.radius / self.radius;

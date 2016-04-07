@@ -1,4 +1,4 @@
-var $ = function (selector, context) {
+var $ = function Utility(selector, context) {
     var searchResult;
     if (typeof (selector) == "string")    {
         context = context || document;
@@ -13,7 +13,7 @@ var $ = function (selector, context) {
         return;
     }
 
-    searchResult.css = function(name, value) {
+    searchResult.css = function ApplyCSS(name, value) {
         var length = searchResult.length;
         for (var i = length; i--;) {
             if (typeof (name) == "string") {
@@ -29,7 +29,7 @@ var $ = function (selector, context) {
         return searchResult;
     }
 
-    searchResult.html = function(value) {
+    searchResult.html = function ApplyHTML(value) {
         var length = searchResult.length;
         for (var i = length; i--;) {
             searchResult[i].innerHTML = value;
@@ -37,7 +37,7 @@ var $ = function (selector, context) {
         return searchResult;
     }
 
-    searchResult.on = function(event, handler) {
+    searchResult.on = function AddEvent(event, handler) {
         var length = searchResult.length;
         for (var i = length; i--;) {
             searchResult[i]["on"+event] = handler;
@@ -45,7 +45,7 @@ var $ = function (selector, context) {
         return searchResult;
     }
 
-    searchResult.append = function (html) {
+    searchResult.append = function AppendHTML(html) {
         var length = searchResult.length;
         for (var i = length; i--;) {
             searchResult[i].innerHTML += html;
@@ -53,7 +53,7 @@ var $ = function (selector, context) {
         return searchResult;
     }
 
-    searchResult.each = function(handler) {
+    searchResult.each = function Each(handler) {
         var length = searchResult.length;
         for (var i = length; i--;) {
             handler(searchResult[i], i, searchResult);
